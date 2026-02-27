@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>진솔 자동화 프로젝트 현황</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: rgba(255,255,255,0.08);
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --accent: #f59e0b;
+    --blue: #3b82f6;
+    --green: #10b981;
+    --purple: #8b5cf6;
+    --red: #ef4444;
+    --cyan: #06b6d4;
+  }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(ellipse at 30% 20%, rgba(59,130,246,0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(139,92,246,0.05) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .container {
+    position: relative; z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  @media (min-width: 600px) {
+    body { font-size: 18px; }
+    .header h1 { font-size: 2.2rem; }
+    .header p { font-size: 1rem; }
+    .update-time { font-size: 0.85rem; }
+    .overall-title { font-size: 1rem; }
+    .overall-bar { height: 12px; }
+    .legend-item { font-size: 0.9rem; }
+    .project-header { padding: 1.2rem 1.3rem; }
+    .project-name { font-size: 1.2rem; }
+    .project-desc { font-size: 0.9rem; }
+    .project-status { font-size: 0.85rem; padding: 0.25rem 0.8rem; }
+    .project-icon { width: 50px; height: 50px; font-size: 1.5rem; }
+    .progress-label { font-size: 0.9rem; }
+    .progress-bar { height: 10px; }
+    .milestone { font-size: 1rem; padding: 0.5rem 0; }
+    .milestone-check { width: 24px; height: 24px; font-size: 0.75rem; }
+    .activity-title { font-size: 1rem; }
+    .activity-date { font-size: 0.85rem; }
+    .activity-text { font-size: 0.95rem; }
+    .activity-tag { font-size: 0.8rem; }
+    .footer { font-size: 0.85rem; }
+  }
+
+  /* 헤더 */
+  .header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .header h1 {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+
+  .header p {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  .update-time {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.2rem 0.7rem;
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 20px;
+    font-size: 0.65rem;
+    color: var(--accent);
+  }
+
+  /* 전체 진행률 */
+  .overall {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .overall-title {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.05em;
+  }
+
+  .overall-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .bar-segment {
+    height: 100%;
+    transition: width 0.5s ease;
+  }
+
+  .overall-legend {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 2px;
+  }
+
+  /* 프로젝트 카드 */
+  .project {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+
+  .project-header {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+  }
+
+  .project-header:active {
+    background: rgba(255,255,255,0.03);
+  }
+
+  .project-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .project-info { flex: 1; }
+
+  .project-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .project-desc {
+    font-size: 0.68rem;
+    color: var(--muted);
+    margin-top: 0.15rem;
+  }
+
+  .project-status {
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .status-live { background: rgba(16,185,129,0.15); color: var(--green); }
+  .status-ready { background: rgba(59,130,246,0.15); color: var(--blue); }
+  .status-plan { background: rgba(139,92,246,0.15); color: var(--purple); }
+
+  .project-arrow {
+    font-size: 0.7rem;
+    color: var(--muted);
+    transition: transform 0.3s;
+    margin-left: 0.3rem;
+  }
+
+  .project.open .project-arrow {
+    transform: rotate(180deg);
+  }
+
+  .project-body {
+    display: none;
+    padding: 0 1rem 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .project.open .project-body {
+    display: block;
+  }
+
+  /* 진행 바 (개별) */
+  .progress-section {
+    margin-top: 0.8rem;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  /* 마일스톤 */
+  .milestones {
+    margin-top: 0.8rem;
+  }
+
+  .milestone {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.4rem 0;
+    font-size: 0.75rem;
+    color: #c9cdd6;
+    line-height: 1.5;
+  }
+
+  .milestone-check {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .check-done {
+    background: rgba(16,185,129,0.2);
+    color: var(--green);
+  }
+
+  .check-current {
+    background: rgba(59,130,246,0.2);
+    color: var(--blue);
+    animation: pulse 2s infinite;
+  }
+
+  .check-pending {
+    background: rgba(255,255,255,0.06);
+    color: var(--muted);
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.3); }
+    50% { box-shadow: 0 0 0 4px rgba(59,130,246,0); }
+  }
+
+  /* 최근 활동 */
+  .activity {
+    margin-top: 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem;
+  }
+
+  .activity-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.8rem;
+  }
+
+  .activity-item {
+    display: flex;
+    gap: 0.7rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .activity-item:last-child { border-bottom: none; }
+
+  .activity-date {
+    font-size: 0.65rem;
+    color: var(--muted);
+    white-space: nowrap;
+    min-width: 48px;
+    padding-top: 0.1rem;
+  }
+
+  .activity-text {
+    font-size: 0.75rem;
+    color: #c9cdd6;
+    line-height: 1.5;
+  }
+
+  .activity-tag {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    margin-right: 0.2rem;
+  }
+
+  /* 푸터 */
+  .footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.65rem;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>진솔 자동화 프로젝트</h1>
+    <p>세무법인 진솔 | 업무 자동화 개발 현황</p>
+    <div class="update-time">최종 업데이트: 2026.02.27</div>
+  </div>
+
+  <!-- 전체 진행률 -->
+  <div class="overall">
+    <div class="overall-title">전체 진행률</div>
+    <div class="overall-bar">
+      <div class="bar-segment" style="width:40%; background:var(--blue);" title="개발중"></div>
+      <div class="bar-segment" style="width:60%; background:var(--purple);" title="기획완료"></div>
+    </div>
+    <div class="overall-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>개발중 2개</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>기획완료 3개</div>
+    </div>
+  </div>
+
+  <!-- 1. PDF/Excel 비교 서비스 -->
+  <div class="project" onclick="toggle(this)">
+    <div class="project-header">
+      <div class="project-icon" style="background:rgba(16,185,129,0.15)">📄</div>
+      <div class="project-info">
+        <div class="project-name">PDF/Excel 비교 서비스</div>
+        <div class="project-desc">신고서 PDF와 원본 엑셀 자동 대조</div>
+      </div>
+      <div class="project-status status-ready">개발중</div>
+      <div class="project-arrow">▼</div>
+    </div>
+    <div class="project-body">
+      <div class="progress-section">
+        <div class="progress-label"><span>진행률</span><span>65%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:65%; background:var(--blue);"></div></div>
+      </div>
+      <div class="milestones">
+        <div class="milestone"><div class="milestone-check check-done">✓</div>PDF 파싱 엔진 개발</div>
+        <div class="milestone"><div class="milestone-check check-done">✓</div>엑셀 파싱 + 매핑셋 시스템</div>
+        <div class="milestone"><div class="milestone-check check-done">✓</div>비교 로직 + 정규화</div>
+        <div class="milestone"><div class="milestone-check check-done">✓</div>웹 UI 초안 (메인 + 관리자)</div>
+        <div class="milestone"><div class="milestone-check check-done">✓</div>테스트 35개 통과 (로컬)</div>
+        <div class="milestone"><div class="milestone-check check-current">→</div>관리자 사이트에서 매핑 등록 작업</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>홈페이지 UI 다듬기</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>웹서버 배포 + 파싱 테스트</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>추가 기능 검토 (미정)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 공단 매출 자동 수집 -->
+  <div class="project" onclick="toggle(this)">
+    <div class="project-header">
+      <div class="project-icon" style="background:rgba(59,130,246,0.15)">🏥</div>
+      <div class="project-info">
+        <div class="project-name">공단 매출 자동 수집</div>
+        <div class="project-desc">6개 포털 스크래핑 → 매출 자동 집계</div>
+      </div>
+      <div class="project-status status-ready">구현대기</div>
+      <div class="project-arrow">▼</div>
+    </div>
+    <div class="project-body">
+      <div class="progress-section">
+        <div class="progress-label"><span>진행률</span><span>40%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:40%; background:var(--blue);"></div></div>
+      </div>
+      <div class="milestones">
+        <div class="milestone"><div class="milestone-check check-done">✓</div>6개 포털 구조 분석 (Fiddler)</div>
+        <div class="milestone"><div class="milestone-check check-done">✓</div>인증 방식 파악 (NPKI, JWT, SSO 등)</div>
+        <div class="milestone"><div class="milestone-check check-done">✓</div>엑셀 서식 4종 구조 분석</div>
+        <div class="milestone"><div class="milestone-check check-current">→</div>포털별 로그인 + 데이터 수집 구현</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>인증서 등록 UI + 암호화 저장</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>스케줄러 + DB 설계</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>웹 화면 + 테스트</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 홈택스 연동 자동화 -->
+  <div class="project" onclick="toggle(this)">
+    <div class="project-header">
+      <div class="project-icon" style="background:rgba(139,92,246,0.15)">🧾</div>
+      <div class="project-info">
+        <div class="project-name">홈택스 연동 자동화</div>
+        <div class="project-desc">카드매출·현금영수증 자동 수집</div>
+      </div>
+      <div class="project-status status-plan">기획완료</div>
+      <div class="project-arrow">▼</div>
+    </div>
+    <div class="project-body">
+      <div class="progress-section">
+        <div class="progress-label"><span>진행률</span><span>15%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:15%; background:var(--purple);"></div></div>
+      </div>
+      <div class="milestones">
+        <div class="milestone"><div class="milestone-check check-done">✓</div>수집 대상 정의 (카드, 현금영수증, 세금계산서)</div>
+        <div class="milestone"><div class="milestone-check check-current">→</div>Fiddler로 세무사랑 홈택스 트래픽 캡처</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>API 엔드포인트 분석</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>수집 코드 구현</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>약국 매입세금계산서 약품 분류 (AI)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. 세무법인 통합 플랫폼 -->
+  <div class="project" onclick="toggle(this)">
+    <div class="project-header">
+      <div class="project-icon" style="background:rgba(139,92,246,0.15)">🏢</div>
+      <div class="project-info">
+        <div class="project-name">세무법인 통합 플랫폼</div>
+        <div class="project-desc">고객 소통 + 자료 수집 + DB 연동</div>
+      </div>
+      <div class="project-status status-plan">기획완료</div>
+      <div class="project-arrow">▼</div>
+    </div>
+    <div class="project-body">
+      <div class="progress-section">
+        <div class="progress-label"><span>진행률</span><span>20%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:20%; background:var(--purple);"></div></div>
+      </div>
+      <div class="milestones">
+        <div class="milestone"><div class="milestone-check check-done">✓</div>플랫폼 구조 기획 (고객용 PWA + 직원용 앱)</div>
+        <div class="milestone"><div class="milestone-check check-done">✓</div>세무사랑 DB 역분석 (스키마, 암호화 구조)</div>
+        <div class="milestone"><div class="milestone-check check-current">→</div>세무사랑 Import 서식 분석 / 서버 프로토콜 분석</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>고객 포탈 UI 개발</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>직원용 앱 개발</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>카카오 알림톡 연동</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 챗봇 서비스 -->
+  <div class="project" onclick="toggle(this)">
+    <div class="project-header">
+      <div class="project-icon" style="background:rgba(139,92,246,0.15)">🤖</div>
+      <div class="project-info">
+        <div class="project-name">챗봇 서비스</div>
+        <div class="project-desc">세무·노무 반복 문의 AI 자동 응답</div>
+      </div>
+      <div class="project-status status-plan">기획완료</div>
+      <div class="project-arrow">▼</div>
+    </div>
+    <div class="project-body">
+      <div class="progress-section">
+        <div class="progress-label"><span>진행률</span><span>10%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:10%; background:var(--purple);"></div></div>
+      </div>
+      <div class="milestones">
+        <div class="milestone"><div class="milestone-check check-done">✓</div>챗봇 방식 설계 (혼합: 등록답변 + AI + 담당자)</div>
+        <div class="milestone"><div class="milestone-check check-current">→</div>카카오톡 대화 데이터 정제</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>임베딩 모델 선택 + 학습</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>직원 검토 프로세스 개발</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>노무사 연계 구조 구축</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 최근 활동 -->
+  <div class="activity">
+    <div class="activity-title">최근 활동</div>
+    <div class="activity-item">
+      <div class="activity-date">02.27</div>
+      <div class="activity-text">
+        <span class="activity-tag" style="background:rgba(245,158,11,0.15); color:var(--accent);">환경</span>
+        GitHub 레포 생성, 프로젝트 문서 마이그레이션, 개발환경 세팅 완료
+      </div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-date">02.27</div>
+      <div class="activity-text">
+        <span class="activity-tag" style="background:rgba(16,185,129,0.15); color:var(--green);">PDF</span>
+        PDF/Excel 비교 서비스 코드 GitHub 업로드
+      </div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-date">02.26</div>
+      <div class="activity-text">
+        <span class="activity-tag" style="background:rgba(59,130,246,0.15); color:var(--blue);">공단</span>
+        6개 포털 Fiddler 트래픽 분석 완료, 인증 방식 정리
+      </div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-date">02.25</div>
+      <div class="activity-text">
+        <span class="activity-tag" style="background:rgba(139,92,246,0.15); color:var(--purple);">플랫폼</span>
+        세무사랑 DB 역분석 (스키마, 암호화 구조, LoA 로그 해독)
+      </div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-date">02.25</div>
+      <div class="activity-text">
+        <span class="activity-tag" style="background:rgba(16,185,129,0.15); color:var(--green);">PDF</span>
+        테스트 35개 전체 통과, 서비스 정식 운영 시작
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    세무법인 진솔 IT팀 · 거래처 ~2,000개 · 직원 80명
+  </div>
+
+</div>
+
+<script>
+  function toggle(el) {
+    el.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>
