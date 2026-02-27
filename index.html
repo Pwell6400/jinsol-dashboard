@@ -292,6 +292,18 @@
     color: var(--green);
   }
 
+  .milestone-date {
+    font-size: 0.6rem;
+    color: var(--muted);
+    margin-left: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 600px) {
+    .milestone-date { font-size: 0.75rem; }
+  }
+
   .check-current {
     background: rgba(59,130,246,0.2);
     color: var(--blue);
@@ -373,18 +385,20 @@
   <div class="header">
     <h1>진솔 자동화 프로젝트</h1>
     <p>세무법인 진솔 | 업무 자동화 개발 현황</p>
-    <div class="update-time">최종 업데이트: 2026.02.27</div>
+    <div class="update-time">최종 업데이트: 2026.02.27 20:15</div>
   </div>
 
   <!-- 전체 진행률 -->
   <div class="overall">
     <div class="overall-title">전체 진행률</div>
     <div class="overall-bar">
-      <div class="bar-segment" style="width:40%; background:var(--blue);" title="개발중"></div>
+      <div class="bar-segment" style="width:15%; background:var(--green);" title="운영중"></div>
+      <div class="bar-segment" style="width:25%; background:var(--blue);" title="개발중"></div>
       <div class="bar-segment" style="width:60%; background:var(--purple);" title="기획완료"></div>
     </div>
     <div class="overall-legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>개발중 2개</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>운영중 1개</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>개발중 1개</div>
       <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>기획완료 3개</div>
     </div>
   </div>
@@ -397,24 +411,25 @@
         <div class="project-name">PDF/Excel 비교 서비스</div>
         <div class="project-desc">신고서 PDF와 원본 엑셀 자동 대조</div>
       </div>
-      <div class="project-status status-ready">개발중</div>
+      <div class="project-status status-live">운영중</div>
       <div class="project-arrow">▼</div>
     </div>
     <div class="project-body">
       <div class="progress-section">
-        <div class="progress-label"><span>진행률</span><span>65%</span></div>
-        <div class="progress-bar"><div class="progress-fill" style="width:65%; background:var(--blue);"></div></div>
+        <div class="progress-label"><span>진행률</span><span>75%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:75%; background:var(--blue);"></div></div>
       </div>
       <div class="milestones">
-        <div class="milestone"><div class="milestone-check check-done">✓</div>PDF 파싱 엔진 개발</div>
-        <div class="milestone"><div class="milestone-check check-done">✓</div>엑셀 파싱 + 매핑셋 시스템</div>
-        <div class="milestone"><div class="milestone-check check-done">✓</div>비교 로직 + 정규화</div>
-        <div class="milestone"><div class="milestone-check check-done">✓</div>웹 UI 초안 (메인 + 관리자)</div>
-        <div class="milestone"><div class="milestone-check check-done">✓</div>테스트 35개 통과 (로컬)</div>
+        <div class="milestone"><div class="milestone-check check-done">✓</div>PDF 파싱 엔진 개발<span class="milestone-date">02.24 14:00</span></div>
+        <div class="milestone"><div class="milestone-check check-done">✓</div>엑셀 파싱 + 매핑셋 시스템<span class="milestone-date">02.24 18:30</span></div>
+        <div class="milestone"><div class="milestone-check check-done">✓</div>비교 로직 + 정규화<span class="milestone-date">02.25 11:00</span></div>
+        <div class="milestone"><div class="milestone-check check-done">✓</div>웹 UI (메인 + 관리자 + 로그인)<span class="milestone-date">02.25 16:00</span></div>
+        <div class="milestone"><div class="milestone-check check-done">✓</div>테스트 36개 통과<span class="milestone-date">02.27 20:08</span></div>
+        <div class="milestone"><div class="milestone-check check-done">✓</div>EC2 웹서버 배포 (자동 배포 CI/CD)<span class="milestone-date">02.27 19:55</span></div>
+        <div class="milestone"><div class="milestone-check check-done">✓</div>비교 이력 DB 저장 + 조회 기능<span class="milestone-date">02.27 20:10</span></div>
         <div class="milestone"><div class="milestone-check check-current">→</div>관리자 사이트에서 매핑 등록 작업</div>
         <div class="milestone"><div class="milestone-check check-pending">○</div>홈페이지 UI 다듬기</div>
-        <div class="milestone"><div class="milestone-check check-pending">○</div>웹서버 배포 + 파싱 테스트</div>
-        <div class="milestone"><div class="milestone-check check-pending">○</div>추가 기능 검토 (미정)</div>
+        <div class="milestone"><div class="milestone-check check-pending">○</div>추가 기능 (엑셀 다운로드, 필터, 일괄비교 등)</div>
       </div>
     </div>
   </div>
@@ -532,15 +547,29 @@
     <div class="activity-item">
       <div class="activity-date">02.27</div>
       <div class="activity-text">
-        <span class="activity-tag" style="background:rgba(245,158,11,0.15); color:var(--accent);">환경</span>
-        GitHub 레포 생성, 프로젝트 문서 마이그레이션, 개발환경 세팅 완료
+        <span class="activity-tag" style="background:rgba(16,185,129,0.15); color:var(--green);">PDF</span>
+        비교 결과 DB 저장 + 이력 조회 기능 추가, 테스트 36개 통과
       </div>
     </div>
     <div class="activity-item">
       <div class="activity-date">02.27</div>
       <div class="activity-text">
         <span class="activity-tag" style="background:rgba(16,185,129,0.15); color:var(--green);">PDF</span>
-        PDF/Excel 비교 서비스 코드 GitHub 업로드
+        EC2 배포 완료 (서울 리전), GitHub Actions 자동 배포 구축, Nginx+systemd
+      </div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-date">02.27</div>
+      <div class="activity-text">
+        <span class="activity-tag" style="background:rgba(245,158,11,0.15); color:var(--accent);">환경</span>
+        AWS CLI 설정, 시드니 RDS 정리 (스냅샷 보존 후 삭제, 월 $15 절약)
+      </div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-date">02.27</div>
+      <div class="activity-text">
+        <span class="activity-tag" style="background:rgba(245,158,11,0.15); color:var(--accent);">환경</span>
+        GitHub 레포 생성, 프로젝트 문서 마이그레이션, 개발환경 세팅 완료
       </div>
     </div>
     <div class="activity-item">
@@ -555,13 +584,6 @@
       <div class="activity-text">
         <span class="activity-tag" style="background:rgba(139,92,246,0.15); color:var(--purple);">플랫폼</span>
         세무사랑 DB 역분석 (스키마, 암호화 구조, LoA 로그 해독)
-      </div>
-    </div>
-    <div class="activity-item">
-      <div class="activity-date">02.25</div>
-      <div class="activity-text">
-        <span class="activity-tag" style="background:rgba(16,185,129,0.15); color:var(--green);">PDF</span>
-        테스트 35개 전체 통과, 서비스 정식 운영 시작
       </div>
     </div>
   </div>
